@@ -14,15 +14,3 @@ def health():
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 10000))
     app.run(host='0.0.0.0', port=port)
-
-@app.route('/')
-def index():
-    return HTML_CONTENT
-
-@app.route('/health')
-def health():
-    return {'status': 'healthy', 'service': 'compliance-training'}
-
-if __name__ == '__main__':
-    port = int(os.environ.get('PORT', 10000))
-    app.run(host='0.0.0.0', port=port)
