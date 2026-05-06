@@ -1,0 +1,1254 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>丽珠医药营销总部 · 合规速训微课</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+            background: linear-gradient(135deg, #1e3a5f 0%, #2d5a87 50%, #1e3a5f 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        /* 封面样式 */
+        .cover {
+            background: linear-gradient(135deg, #0d2137 0%, #1e3a5f 50%, #2d5a87 100%);
+            border-radius: 20px;
+            padding: 80px 60px;
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .cover::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 60%);
+            animation: pulse 4s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.5; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+        }
+        
+        .cover-content {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .cover h1 {
+            font-size: 3.5em;
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .cover .subtitle {
+            font-size: 1.8em;
+            opacity: 0.9;
+            margin-bottom: 40px;
+            letter-spacing: 8px;
+        }
+        
+        .cover .meta {
+            font-size: 1.1em;
+            opacity: 0.7;
+            margin-top: 60px;
+        }
+        
+        .badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            padding: 10px 30px;
+            border-radius: 30px;
+            font-size: 1em;
+            margin: 10px;
+            backdrop-filter: blur(10px);
+        }
+        
+        /* 导航栏 */
+        .nav {
+            background: white;
+            border-radius: 15px;
+            padding: 20px 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 20px;
+            z-index: 100;
+        }
+        
+        .nav h2 {
+            color: #1e3a5f;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+        
+        .nav-items {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .nav-item {
+            background: #f0f4f8;
+            padding: 10px 20px;
+            border-radius: 25px;
+            text-decoration: none;
+            color: #1e3a5f;
+            font-size: 0.95em;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+        
+        .nav-item:hover {
+            background: #1e3a5f;
+            color: white;
+            transform: translateY(-2px);
+        }
+        
+        /* 章节样式 */
+        .section {
+            background: white;
+            border-radius: 20px;
+            padding: 50px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        }
+        
+        .section-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 40px;
+            padding-bottom: 30px;
+            border-bottom: 3px solid #e8eef4;
+        }
+        
+        .section-number {
+            background: linear-gradient(135deg, #1e3a5f, #2d5a87);
+            color: white;
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8em;
+            font-weight: bold;
+            margin-right: 25px;
+            flex-shrink: 0;
+        }
+        
+        .section-title {
+            flex: 1;
+        }
+        
+        .section-title h2 {
+            color: #1e3a5f;
+            font-size: 2.2em;
+            margin-bottom: 10px;
+        }
+        
+        .section-title p {
+            color: #666;
+            font-size: 1.1em;
+        }
+        
+        /* 卡片样式 */
+        .card {
+            background: #f8fafc;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 25px;
+            border-left: 5px solid #1e3a5f;
+            transition: all 0.3s;
+        }
+        
+        .card:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+        
+        .card.warning {
+            border-left-color: #dc2626;
+            background: linear-gradient(135deg, #fef2f2, #fff5f5);
+        }
+        
+        .card.success {
+            border-left-color: #16a34a;
+            background: linear-gradient(135deg, #f0fdf4, #f5fff5);
+        }
+        
+        .card h3 {
+            color: #1e3a5f;
+            font-size: 1.4em;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .card h3 .icon {
+            margin-right: 10px;
+            font-size: 1.2em;
+        }
+        
+        .card ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        
+        .card li {
+            padding: 10px 0;
+            padding-left: 30px;
+            position: relative;
+            font-size: 1.05em;
+            line-height: 1.7;
+        }
+        
+        .card li::before {
+            content: '▸';
+            position: absolute;
+            left: 0;
+            color: #1e3a5f;
+            font-weight: bold;
+        }
+        
+        .card.warning li::before {
+            content: '✕';
+            color: #dc2626;
+        }
+        
+        .card.success li::before {
+            content: '✓';
+            color: #16a34a;
+        }
+        
+        /* 双栏对比 */
+        .compare {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            margin-bottom: 25px;
+        }
+        
+        @media (max-width: 768px) {
+            .compare {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        /* 时间线 */
+        .timeline {
+            position: relative;
+            padding-left: 40px;
+        }
+        
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 10px;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: linear-gradient(180deg, #1e3a5f, #2d5a87);
+        }
+        
+        .timeline-item {
+            position: relative;
+            margin-bottom: 30px;
+            padding: 25px;
+            background: #f8fafc;
+            border-radius: 15px;
+        }
+        
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -36px;
+            top: 30px;
+            width: 16px;
+            height: 16px;
+            background: #1e3a5f;
+            border-radius: 50%;
+            border: 3px solid white;
+            box-shadow: 0 0 0 3px #1e3a5f;
+        }
+        
+        .timeline-date {
+            color: #1e3a5f;
+            font-weight: bold;
+            font-size: 1.1em;
+            margin-bottom: 10px;
+        }
+        
+        /* 案例卡片 */
+        .case-card {
+            background: linear-gradient(135deg, #fef2f2, #fff);
+            border-radius: 20px;
+            padding: 35px;
+            margin-bottom: 30px;
+            border: 2px solid #fee2e2;
+            position: relative;
+        }
+        
+        .case-card::before {
+            content: '⚠️';
+            position: absolute;
+            top: -15px;
+            right: 30px;
+            font-size: 2em;
+            background: white;
+            padding: 5px 15px;
+            border-radius: 30px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+        
+        .case-title {
+            color: #dc2626;
+            font-size: 1.5em;
+            font-weight: bold;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px dashed #fecaca;
+        }
+        
+        .case-content {
+            font-size: 1.05em;
+            line-height: 1.9;
+            color: #444;
+            margin-bottom: 25px;
+        }
+        
+        .case-lessons {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+        }
+        
+        .case-lessons h4 {
+            color: #1e3a5f;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+        
+        .case-lessons li {
+            padding: 8px 0;
+            padding-left: 25px;
+            position: relative;
+        }
+        
+        .case-lessons li::before {
+            content: '💡';
+            position: absolute;
+            left: 0;
+        }
+        
+        /* 检查清单 */
+        .checklist {
+            background: linear-gradient(135deg, #f0f9ff, #fff);
+            border-radius: 20px;
+            padding: 35px;
+            border: 2px solid #bae6fd;
+        }
+        
+        .checklist h3 {
+            color: #0369a1;
+            font-size: 1.5em;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .checklist h3::before {
+            content: '☑️';
+            margin-right: 10px;
+        }
+        
+        .checklist-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            margin-bottom: 12px;
+            background: white;
+            border-radius: 10px;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        
+        .checklist-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 3px 15px rgba(0,0,0,0.1);
+        }
+        
+        .checklist-item input[type="checkbox"] {
+            width: 24px;
+            height: 24px;
+            margin-right: 15px;
+            cursor: pointer;
+            accent-color: #0369a1;
+        }
+        
+        .checklist-item label {
+            flex: 1;
+            cursor: pointer;
+            font-size: 1.05em;
+        }
+        
+        /* 表格样式 */
+        .table-container {
+            overflow-x: auto;
+            margin-bottom: 25px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 3px 15px rgba(0,0,0,0.1);
+        }
+        
+        th {
+            background: linear-gradient(135deg, #1e3a5f, #2d5a87);
+            color: white;
+            padding: 18px;
+            text-align: left;
+            font-weight: 600;
+        }
+        
+        td {
+            padding: 18px;
+            border-bottom: 1px solid #e8eef4;
+        }
+        
+        tr:hover {
+            background: #f8fafc;
+        }
+        
+        tr:last-child td {
+            border-bottom: none;
+        }
+        
+        /* 总结页 */
+        .summary {
+            background: linear-gradient(135deg, #1e3a5f, #2d5a87);
+            border-radius: 20px;
+            padding: 60px;
+            color: white;
+            text-align: center;
+        }
+        
+        .summary h2 {
+            font-size: 2.5em;
+            margin-bottom: 40px;
+        }
+        
+        .summary-item {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            text-align: left;
+            display: flex;
+            align-items: flex-start;
+        }
+        
+        .summary-number {
+            background: rgba(255,255,255,0.2);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+            font-weight: bold;
+            margin-right: 20px;
+            flex-shrink: 0;
+        }
+        
+        .summary-text {
+            font-size: 1.2em;
+            line-height: 1.7;
+        }
+        
+        /* 承诺书 */
+        .commitment {
+            background: linear-gradient(135deg, #f0fdf4, #fff);
+            border-radius: 20px;
+            padding: 50px;
+            text-align: center;
+            border: 3px solid #86efac;
+        }
+        
+        .commitment h2 {
+            color: #166534;
+            font-size: 2em;
+            margin-bottom: 30px;
+        }
+        
+        .commitment-text {
+            font-size: 1.2em;
+            line-height: 2;
+            color: #444;
+            margin-bottom: 40px;
+        }
+        
+        .signature {
+            display: flex;
+            justify-content: center;
+            gap: 60px;
+            margin-top: 50px;
+        }
+        
+        .signature-line {
+            border-bottom: 2px solid #333;
+            width: 200px;
+            padding-bottom: 10px;
+            text-align: center;
+            color: #666;
+        }
+        
+        /* FAQ */
+        .faq-item {
+            background: #f8fafc;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            border-left: 4px solid #1e3a5f;
+        }
+        
+        .faq-question {
+            font-weight: bold;
+            color: #1e3a5f;
+            font-size: 1.1em;
+            margin-bottom: 10px;
+        }
+        
+        .faq-answer {
+            color: #555;
+            line-height: 1.7;
+        }
+        
+        /* 页脚 */
+        .footer {
+            text-align: center;
+            padding: 40px;
+            color: rgba(255,255,255,0.7);
+        }
+        
+        .footer h2 {
+            font-size: 3em;
+            margin-bottom: 20px;
+            color: white;
+        }
+        
+        /* 强调文字 */
+        .highlight {
+            background: linear-gradient(120deg, #fef08a 0%, #fef08a 100%);
+            background-repeat: no-repeat;
+            background-size: 100% 40%;
+            background-position: 0 88%;
+            padding: 0 5px;
+        }
+        
+        .danger {
+            color: #dc2626;
+            font-weight: bold;
+        }
+        
+        .safe {
+            color: #16a34a;
+            font-weight: bold;
+        }
+        
+        /* 进度条 */
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #1e3a5f, #2d5a87);
+            z-index: 1000;
+            transition: width 0.3s;
+        }
+        
+        /* 返回顶部 */
+        .back-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: #1e3a5f;
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+            transition: all 0.3s;
+            text-decoration: none;
+            font-size: 1.5em;
+        }
+        
+        .back-to-top:hover {
+            transform: translateY(-5px);
+            background: #2d5a87;
+        }
+        
+        /* 打印样式 */
+        @media print {
+            .nav, .back-to-top, .progress-bar {
+                display: none;
+            }
+            
+            .section {
+                break-inside: avoid;
+                box-shadow: none;
+                border: 1px solid #ddd;
+            }
+            
+            body {
+                background: white;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="progress-bar" id="progressBar"></div>
+    
+    <div class="container">
+        <!-- 封面 -->
+        <div class="cover" id="top">
+            <div class="cover-content">
+                <h1>丽珠医药营销总部</h1>
+                <div class="subtitle">合规速训微课</div>
+                <div>
+                    <span class="badge">认清形势</span>
+                    <span class="badge">守住红线</span>
+                    <span class="badge">安全作业</span>
+                </div>
+                <div class="meta">
+                    培训部 · 2026年5月<br>
+                    30分钟必修微课 · 100%覆盖率 · 80分合格
+                </div>
+            </div>
+        </div>
+        
+        <!-- 导航 -->
+        <nav class="nav">
+            <h2>📚 课程目录</h2>
+            <div class="nav-items">
+                <a href="#module1" class="nav-item">模块一：当下的形势</a>
+                <a href="#module2" class="nav-item">模块二：行为红线</a>
+                <a href="#module3" class="nav-item">模块三：案例警示</a>
+                <a href="#module4" class="nav-item">模块四：实操指南</a>
+                <a href="#module5" class="nav-item">模块五：总结承诺</a>
+                <a href="#faq" class="nav-item">常见问题FAQ</a>
+            </div>
+        </nav>
+        
+        <!-- 课程信息 -->
+        <div class="section">
+            <div class="section-header">
+                <div class="section-number">📋</div>
+                <div class="section-title">
+                    <h2>课程信息</h2>
+                    <p>了解本次培训的基本要求和学习目标</p>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h3><span class="icon">🎯</span>课程性质</h3>
+                <p style="font-size: 1.1em; line-height: 1.8;">30分钟线上必修微课，不是例行年度合规培训，而是应对当前医药反腐"深水区"的紧急必修课。</p>
+            </div>
+            
+            <div class="card">
+                <h3><span class="icon">👥</span>适用对象</h3>
+                <p style="font-size: 1.1em; line-height: 1.8;">营销总部全体人员（含销售代表、地区经理、大区经理、市场部、医学部等）</p>
+            </div>
+            
+            <div class="card">
+                <h3><span class="icon">✅</span>完成要求</h3>
+                <p style="font-size: 1.1em; line-height: 1.8;"><span class="highlight">100%覆盖率 + 在线考核通过（80分合格）</span></p>
+            </div>
+            
+            <div class="card">
+                <h3><span class="icon">🎓</span>课程目标</h3>
+                <p style="font-size: 1.1em; line-height: 1.8;">认清当前形势，掌握行为红线，知道<span class="danger">什么不能做</span>、<span class="safe">什么能做</span>、<span class="danger">做了会怎样</span></p>
+            </div>
+        </div>
+        
+        <!-- 模块一：当下的形势 -->
+        <div class="section" id="module1">
+            <div class="section-header">
+                <div class="section-number">01</div>
+                <div class="section-title">
+                    <h2>当下的形势</h2>
+                    <p>为什么这堂课现在必须上</p>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h3>⚠️ 直面事实</h3>
+                <p style="font-size: 1.2em; margin-bottom: 20px;">这不是一次例行的年度合规培训。我们需要直面一个事实——</p>
+                <p style="font-size: 1.5em; color: #dc2626; font-weight: bold; text-align: center; padding: 30px; background: #fef2f2; border-radius: 15px;">
+                    2023年7月以来，医药反腐进入了"深水区"
+                </p>
+            </div>
+            
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-date">2023年7月</div>
+                    <p>国家卫健委等14部委联合召开全国医药领域腐败问题集中整治工作视频会议，启动为期一年的集中整治</p>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-date">2024年</div>
+                    <p>整治进入常态化高压阶段，全国已有<span class="danger">数百名医院院长/书记落马</span>，多名药企高管被查</p>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-date">2025-2026年</div>
+                    <p>反腐从"打老虎"转向"建制度"，<span class="highlight">穿透式监管</span>覆盖到医药购销全链条</p>
+                </div>
+            </div>
+            
+            <div class="card warning">
+                <h3><span class="icon">📢</span>核心信号已经非常明确</h3>
+                <div class="table-container">
+                    <table>
+                        <tr>
+                            <th>信号</th>
+                            <th>意味着什么</th>
+                        </tr>
+                        <tr>
+                            <td>学术会议大面积叫停或缩减</td>
+                            <td>"学术推广"的形式受到严格审查</td>
+                        </tr>
+                        <tr>
+                            <td>药企代表院内拜访受限</td>
+                            <td>传统的"跑医院"模式风险急剧上升</td>
+                        </tr>
+                        <tr>
+                            <td>讲课费、咨询费严查</td>
+                            <td>"劳务报酬"不再是安全地带</td>
+                        </tr>
+                        <tr>
+                            <td>医药代表备案制严格执行</td>
+                            <td>无备案 = 无资质 = 违规</td>
+                        </tr>
+                        <tr>
+                            <td>数字化追溯能力提升</td>
+                            <td>每一笔费用、每一次拜访都可能被查到</td>
+                        </tr>
+                    </table>
+                </div>
+                <p style="font-size: 1.2em; text-align: center; margin-top: 20px; padding: 20px; background: white; border-radius: 10px;">
+                    <strong>一句话总结：</strong><br>
+                    <span class="danger">过去能做的事，今天不一定能做；过去擦边能过的事，今天可能直接踩线。</span>
+                </p>
+            </div>
+            
+            <div class="card">
+                <h3><span class="icon">🏢</span>这和丽珠有什么关系</h3>
+                <p style="margin-bottom: 20px;">丽珠医药是内资头部药企，A+H股上市，产品管线覆盖消化道（丽珠得乐、丽珠肠乐等）、生殖辅助（注射用尿促性素等）、抗感染、肿瘤等重点领域，营销网络遍布全国。</p>
+                <p style="margin-bottom: 15px;"><strong>这意味着：</strong></p>
+                <ul>
+                    <li>销售团队体量大、覆盖广，<span class="highlight">监管关注度高</span></li>
+                    <li>丽珠得乐等消化道品种是医院常用药，处方量大、关联医生多，<span class="danger">属于重点审查领域</span></li>
+                    <li>辅助生殖领域本身社会关注度高，推广行为更容易被放大审视</li>
+                    <li>作为上市公司（SZ: 000513 / HK: 01513），合规事件对股价和品牌的影响是直接的</li>
+                </ul>
+                <p style="margin-top: 20px; padding: 20px; background: #e0f2fe; border-radius: 10px; text-align: center;">
+                    不是因为丽珠有什么问题才上这堂课，而是因为在这个环境下，任何一家正规药企都应该主动做好合规——<br>
+                    <strong>这是我们保护自己、保护公司的方式。</strong>
+                </p>
+            </div>
+        </div>
+        
+        <!-- 模块二：行为红线 -->
+        <div class="section" id="module2">
+            <div class="section-header">
+                <div class="section-number">02</div>
+                <div class="section-title">
+                    <h2>行为红线</h2>
+                    <p>什么绝对不能做</p>
+                </div>
+            </div>
+            
+            <div class="card warning">
+                <h3><span class="icon">🚫</span>红线一：任何形式的商业贿赂</h3>
+                <p style="margin-bottom: 15px; font-weight: bold; color: #dc2626;">❌ 绝对不能做：</p>
+                <ul>
+                    <li>向医生/医院工作人员支付现金、红包、回扣</li>
+                    <li>以任何名义给医生报销个人消费（旅游、购物、餐饮等）</li>
+                    <li>赠送超出合理范围的礼品（包括购物卡、加油卡、电子红包等）</li>
+                    <li>为医生的个人活动买单（子女升学、搬家、出国等）</li>
+                    <li>通过第三方（CSO、经销商）变相输送利益</li>
+                </ul>
+            </div>
+            
+            <div class="card success">
+                <h3><span class="icon">✅</span>合规做法</h3>
+                <ul>
+                    <li>学术推广只用公司批准的推广材料和费用渠道</li>
+                    <li>所有费用支出必须通过公司正规报销流程，有票据、有审批</li>
+                    <li>不确定某项支出是否合规时，先问合规部，不要自己判断</li>
+                </ul>
+                <p style="margin-top: 20px; padding: 20px; background: white; border-radius: 10px; border-left: 4px solid #16a34a;">
+                    <strong>关键判断标准：</strong><br>
+                    这笔钱/东西如果被纪检/检察院/媒体看到，你能不能解释清楚它和你的业务有什么正当关系？<br>
+                    <span class="danger">如果不能，就不要做。</span>
+                </p>
+            </div>
+            
+            <div class="compare">
+                <div class="card warning">
+                    <h3>❌ 红线二：虚假学术活动</h3>
+                    <ul>
+                        <li>以"学术会议"为名组织旅游/聚餐/娱乐活动</li>
+                        <li>虚构参会人员名单套取会议费用</li>
+                        <li>以"讲课费"名义向医生支付回扣</li>
+                        <li>学术会议的实际内容与报批内容不符</li>
+                        <li>在学术活动中进行超适应症推广</li>
+                    </ul>
+                </div>
+                <div class="card success">
+                    <h3>✅ 合规做法</h3>
+                    <ul>
+                        <li>每场学术活动必须有真实的学术目的和内容</li>
+                        <li>讲者必须有资质，讲课内容须经过医学部审核</li>
+                        <li>活动全程留痕：签到表、议程、照片、讲者资质证明</li>
+                        <li>会议费用与实际活动规模相匹配</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="compare">
+                <div class="card warning">
+                    <h3>❌ 红线三：违规拜访和推广</h3>
+                    <ul>
+                        <li>未完成医药代表备案即开展拜访活动</li>
+                        <li>在非拜访时间/非约定场所接触医疗专业人士</li>
+                        <li>向医生提供虚假或夸大的产品信息</li>
+                        <li>进行超适应症推广</li>
+                        <li>贬低竞品或传播未经证实的竞品信息</li>
+                    </ul>
+                </div>
+                <div class="card success">
+                    <h3>✅ 合规做法</h3>
+                    <ul>
+                        <li>所有代表必须完成医药代表备案</li>
+                        <li>拜访前通过"医药代表备案平台"预约</li>
+                        <li>推广内容严格按公司批准的产品说明书进行</li>
+                        <li>遇到超说明书使用问题，引导至医学部处理</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="compare">
+                <div class="card warning">
+                    <h3>❌ 红线四：费用造假和套现</h3>
+                    <ul>
+                        <li>虚开发票、虚报差旅、虚列会议费用</li>
+                        <li>用个人账户代收代付公司业务款项</li>
+                        <li>与CSO/经销商签订虚假服务合同套取费用</li>
+                        <li>借用他人身份信息报销</li>
+                    </ul>
+                </div>
+                <div class="card success">
+                    <h3>✅ 合规做法</h3>
+                    <ul>
+                        <li>每一笔报销都基于真实发生的业务活动</li>
+                        <li>保留原始凭证（发票、合同、签到表、活动照片等）</li>
+                        <li>发现任何要求你配合做虚假报销的指令，拒绝并上报</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="compare">
+                <div class="card warning">
+                    <h3>❌ 红线五：信息安全与数据合规</h3>
+                    <ul>
+                        <li>将客户信息用于非授权目的</li>
+                        <li>在微信群/朋友圈传播未经公司审批的产品推广信息</li>
+                        <li>泄露公司内部价格策略、招标信息等商业机密</li>
+                    </ul>
+                </div>
+                <div class="card success">
+                    <h3>✅ 合规做法</h3>
+                    <ul>
+                        <li>客户数据按公司数据安全政策管理</li>
+                        <li>社交媒体上不主动发布涉及公司产品的推广内容（除非经市场部批准）</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 模块三：真实案例警示 -->
+        <div class="section" id="module3">
+            <div class="section-header">
+                <div class="section-number">03</div>
+                <div class="section-title">
+                    <h2>真实案例警示</h2>
+                    <p>每一个案例都可能发生在你我身边</p>
+                </div>
+            </div>
+            
+            <div class="case-card">
+                <div class="case-title">案例一：学术会议变旅游</div>
+                <div class="case-content">
+                    某内资药企区域经理组织了20名医生赴三亚参加"学术研讨会"，会议安排在酒店会议室半天，其余三天为海边游玩、潜水、SPA。费用由药企以"学术会议费"名义全额报销。被举报后，公司被处以罚款，区域经理被开除并移送司法机关。
+                </div>
+                <div class="case-lessons">
+                    <h4>教训：</h4>
+                    <ul>
+                        <li>学术活动必须有真实的学术内容，且学术内容占主体</li>
+                        <li>会议地点的选择必须有合理性（为什么这个消化道学术会要开在三亚？）</li>
+                        <li>费用必须与活动实质相匹配</li>
+                        <li><strong>丽珠视角：</strong>我们有很多消化道品种的学术推广活动，如果在活动设计上出现"半天开会、三天玩"的结构，就是明确的违规。</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="case-card">
+                <div class="case-title">案例二：讲课费变回扣</div>
+                <div class="case-content">
+                    某药企以"科室会讲课费"名义，每月向15名核心处方医生支付2000-5000元不等的费用。实际上这些"科室会"从未举办过，PPT由药企代表代为准备，医生只是签了个名。涉案金额累计超过200万元。最终企业负责人被判行贿罪。
+                </div>
+                <div class="case-lessons">
+                    <h4>教训：</h4>
+                    <ul>
+                        <li>讲课费必须对应真实的讲课行为</li>
+                        <li>讲课必须有真实的听众、真实的内容、真实的时长</li>
+                        <li>"走过场"式的讲课也是违规——如果你的科室会只来了3个人、讲了5分钟，这不叫讲课</li>
+                        <li><strong>红线标准：</strong>如果一个讲课活动去掉讲课费后你还有没有动力组织它？如果没有，那这个"讲课"就是假的。</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="case-card">
+                <div class="case-title">案例三：CSO变"洗钱通道"</div>
+                <div class="case-content">
+                    某药企通过与多家CSO（合同销售组织）签订"市场推广服务合同"，CSO开具推广服务费发票，资金流转后以各种方式回流至医生个人账户。CSO本身无实际业务能力（无办公场所、无员工）。最终药企、CSO负责人均被追究刑事责任。
+                </div>
+                <div class="case-lessons">
+                    <h4>教训：</h4>
+                    <ul>
+                        <li>与CSO的合作必须有真实的服务内容</li>
+                        <li>不能用CSO作为套现和利益输送的通道</li>
+                        <li>丽珠如有CSO合作，必须确保对方有真实的业务能力和服务交付</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="case-card">
+                <div class="case-title">案例四：一条微信毁掉一切</div>
+                <div class="case-content">
+                    某药企代表在微信群里发了一条消息："张主任本月目标30盒，每盒返5块，月底结算。"这条消息被群内其他人截图举报，最终成为行贿罪的关键证据。代表被判处有期徒刑，公司被罚款并被取消该品种在该省的挂网资格。
+                </div>
+                <div class="case-lessons">
+                    <h4>教训：</h4>
+                    <ul>
+                        <li>微信群、短信、邮件等所有通信记录都是可追溯的证据</li>
+                        <li>不要在任何非公司系统中讨论费用、返利、利益安排</li>
+                        <li>永远假设你说的每句话都可能被呈堂证供</li>
+                        <li><strong>丽珠铁律：</strong>涉及费用和利益的事，只在公司系统内沟通，不在微信/短信/私人邮件中讨论。</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 模块四：实操指南 -->
+        <div class="section" id="module4">
+            <div class="section-header">
+                <div class="section-number">04</div>
+                <div class="section-title">
+                    <h2>实操指南</h2>
+                    <p>安全的做法</p>
+                </div>
+            </div>
+            
+            <div class="checklist">
+                <h3>学术活动合规检查清单</h3>
+                <p style="margin-bottom: 20px; color: #666;">每组织一场学术活动前，用这个清单自查。全部打勾 → 可以执行。任何一项打不了勾 → 停下来，问上级或合规部。</p>
+                
+                <div class="checklist-item">
+                    <input type="checkbox" id="check1">
+                    <label for="check1">活动目的是否与产品学术推广直接相关？</label>
+                </div>
+                <div class="checklist-item">
+                    <input type="checkbox" id="check2">
+                    <label for="check2">活动内容是否由医学部审核？</label>
+                </div>
+                <div class="checklist-item">
+                    <input type="checkbox" id="check3">
+                    <label for="check3">讲者是否具备相应资质？</label>
+                </div>
+                <div class="checklist-item">
+                    <input type="checkbox" id="check4">
+                    <label for="check4">参会人员是否与活动主题相关？</label>
+                </div>
+                <div class="checklist-item">
+                    <input type="checkbox" id="check5">
+                    <label for="check5">活动地点是否合理（非旅游度假城市）？</label>
+                </div>
+                <div class="checklist-item">
+                    <input type="checkbox" id="check6">
+                    <label for="check6">费用预算是否与活动规模匹配？</label>
+                </div>
+                <div class="checklist-item">
+                    <input type="checkbox" id="check7">
+                    <label for="check7">是否有完整的活动方案报批？</label>
+                </div>
+                <div class="checklist-item">
+                    <input type="checkbox" id="check8">
+                    <label for="check8">是否安排了签到、拍照等留痕措施？</label>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h3><span class="icon">🤝</span>医生拜访合规要点</h3>
+                <div class="table-container">
+                    <table>
+                        <tr>
+                            <th>场景</th>
+                            <th>合规做法</th>
+                        </tr>
+                        <tr>
+                            <td><strong>拜访前</strong></td>
+                            <td>确认已完成医药代表备案；通过医院指定平台预约</td>
+                        </tr>
+                        <tr>
+                            <td><strong>拜访中</strong></td>
+                            <td>只使用公司批准的推广材料；不做超适应症推广；不讨论费用/利益</td>
+                        </tr>
+                        <tr>
+                            <td><strong>礼品</strong></td>
+                            <td>仅限公司统一发放的合规推广物料，金额严格控制在公司标准内</td>
+                        </tr>
+                        <tr>
+                            <td><strong>餐饮</strong></td>
+                            <td>原则上不与医生单独用餐；确需安排须提前审批且人均不超过公司标准</td>
+                        </tr>
+                        <tr>
+                            <td><strong>拜访后</strong></td>
+                            <td>在CRM系统中如实记录拜访内容</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            
+            <div class="card warning">
+                <h3><span class="icon">❓</span>"不确定"场景的处理原则</h3>
+                <p style="margin-bottom: 20px;">当你遇到一个场景，不确定是否合规时：</p>
+                <div style="background: white; border-radius: 15px; padding: 25px;">
+                    <div style="display: flex; align-items: center; margin-bottom: 15px;">
+                        <div style="background: #dc2626; color: white; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; margin-right: 15px;">1</div>
+                        <div><strong>停下来</strong> —— 不要先做了再说</div>
+                    </div>
+                    <div style="display: flex; align-items: center; margin-bottom: 15px;">
+                        <div style="background: #dc2626; color: white; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; margin-right: 15px;">2</div>
+                        <div><strong>问一句</strong> —— 直接上级或合规部</div>
+                    </div>
+                    <div style="display: flex; align-items: center;">
+                        <div style="background: #dc2626; color: white; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; margin-right: 15px;">3</div>
+                        <div><strong>留记录</strong> —— 即使被批准了，也保留审批记录</div>
+                    </div>
+                </div>
+                <p style="margin-top: 20px; text-align: center; font-size: 1.2em; color: #dc2626; font-weight: bold;">
+                    宁可少做一笔业务，也不要多踩一条红线。
+                </p>
+            </div>
+            
+            <div class="card warning">
+                <h3><span class="icon">🚨</span>遇到以下情况，立即上报</h3>
+                <ul>
+                    <li>有人（包括上级）要求你配合做虚假报销</li>
+                    <li>医生主动索要回扣或不当利益</li>
+                    <li>发现同事有疑似违规行为</li>
+                    <li>收到监管部门/纪检的询问或调查通知</li>
+                    <li>媒体联系你询问公司业务相关事宜</li>
+                </ul>
+                <p style="margin-top: 20px; padding: 20px; background: #fef2f2; border-radius: 10px; text-align: center;">
+                    <strong>上报渠道：</strong><br>
+                    公司合规部热线 / 营销总部合规联系人 / 匿名举报邮箱（见公司内网合规专栏）
+                </p>
+            </div>
+        </div>
+        
+        <!-- 模块五：总结与承诺 -->
+        <div class="section" id="module5">
+            <div class="section-header">
+                <div class="section-number">05</div>
+                <div class="section-title">
+                    <h2>总结与承诺</h2>
+                    <p>五句话记住今天</p>
+                </div>
+            </div>
+            
+            <div class="summary">
+                <h2>五句话记住今天</h2>
+                
+                <div class="summary-item">
+                    <div class="summary-number">1</div>
+                    <div class="summary-text">
+                        <strong>反腐不是一阵风</strong> —— 是长期趋势，不会过去，只会更严
+                    </div>
+                </div>
+                
+                <div class="summary-item">
+                    <div class="summary-number">2</div>
+                    <div class="summary-text">
+                        <strong>红线不可碰</strong> —— 商业贿赂、虚假学术、违规推广、费用造假，任何一条都可能让你失去工作甚至自由
+                    </div>
+                </div>
+                
+                <div class="summary-item">
+                    <div class="summary-number">3</div>
+                    <div class="summary-text">
+                        <strong>合规是保护自己</strong> —— 不是公司在为难你，是监管在盯着你
+                    </div>
+                </div>
+                
+                <div class="summary-item">
+                    <div class="summary-number">4</div>
+                    <div class="summary-text">
+                        <strong>不确定就问</strong> —— 做了不能改，问了不丢人
+                    </div>
+                </div>
+                
+                <div class="summary-item">
+                    <div class="summary-number">5</div>
+                    <div class="summary-text">
+                        <strong>丽珠是正规军</strong> —— 我们靠产品实力和专业能力赢得市场，不需要走灰色地带
+                    </div>
+                </div>
+            </div>
+            
+            <div class="commitment" style="margin-top: 40px;">
+                <h2>合规承诺</h2>
+                <div class="commitment-text">
+                    我已完整学习本课程，理解当前医药反腐形势和丽珠合规红线。<br><br>
+                    我承诺在日常工作中严格遵守公司合规制度，不做任何违规行为，发现违规行为将及时上报。
+                </div>
+                <div class="signature">
+                    <div>
+                        <div class="signature-line">签名</div>
+                    </div>
+                    <div>
+                        <div class="signature-line">日期</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- FAQ -->
+        <div class="section" id="faq">
+            <div class="section-header">
+                <div class="section-number">📖</div>
+                <div class="section-title">
+                    <h2>常见问题 FAQ</h2>
+                    <p>快速解答你的疑惑</p>
+                </div>
+            </div>
+            
+            <div class="faq-item">
+                <div class="faq-question">Q1：医生在学术会议后要求报销差旅费，能报吗？</div>
+                <div class="faq-answer">不能。学术会议的参会费用由公司统一安排，不涉及个人差旅报销。医生自行产生的差旅费用不在公司报销范围内。</div>
+            </div>
+            
+            <div class="faq-item">
+                <div class="faq-question">Q2：科室会能请客吃饭吗？</div>
+                <div class="faq-answer">可以安排会议简餐，但须提前审批、人均不超过公司标准、有签到记录。不能安排高档餐饮或娱乐活动。</div>
+            </div>
+            
+            <div class="faq-item">
+                <div class="faq-question">Q3：给医生寄学术资料算不算违规？</div>
+                <div class="faq-answer">经公司审批的学术资料（产品手册、文献汇编等）可以提供。但不能借"学术资料"之名赠送礼品。</div>
+            </div>
+            
+            <div class="faq-item">
+                <div class="faq-question">Q4：医生主动要回扣怎么办？</div>
+                <div class="faq-answer">明确拒绝，做好记录，立即上报。不要为了"维护客户关系"而妥协，一次妥协可能带来不可挽回的后果。</div>
+            </div>
+            
+            <div class="faq-item">
+                <div class="faq-question">Q5：竞品公司代表在给回扣，我们不给会不会丢客户？</div>
+                <div class="faq-answer">短期内可能会有压力，但长期来看：①回扣行为正在被大规模查处，走这条路的人在给自己挖坑；②我们的核心竞争力是产品的临床价值和服务的专业性；③公司正在建设不依赖带金销售的学术推广体系——你不是一个人在战斗。</div>
+            </div>
+        </div>
+        
+        <!-- 页脚 -->
+        <div class="footer">
+            <h2>谢谢</h2>
+            <p style="font-size: 1.3em; margin-bottom: 10px;">合规作业，保护自己，保护公司</p>
+            <p>丽珠医药营销总部 · 培训部 · 2026年5月</p>
+        </div>
+    </div>
+    
+    <a href="#top" class="back-to-top">↑</a>
+    
+    <script>
+        // 进度条
+        window.addEventListener('scroll', function() {
+            const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = (winScroll / height) * 100;
+            document.getElementById('progressBar').style.width = scrolled + '%';
+        });
+        
+        // 检查清单交互
+        document.querySelectorAll('.checklist-item').forEach(item => {
+            item.addEventListener('click', function() {
+                const checkbox = this.querySelector('input[type="checkbox"]');
+                checkbox.checked = !checkbox.checked;
+                if (checkbox.checked) {
+                    this.style.background = '#dcfce7';
+                } else {
+                    this.style.background = 'white';
+                }
+            });
+        });
+        
+        // 平滑滚动
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
