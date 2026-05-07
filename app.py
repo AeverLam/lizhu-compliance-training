@@ -1,16 +1,28 @@
 from flask import Flask, send_file, request, jsonify, render_template_string
-import os, json, random, hashlib, time
+import os, json, random, hashlib, time, base64
 from functools import wraps
 from datetime import datetime
+import threading
+
+try:
+    import requests
+except ImportError:
+    requests = None
 
 app = Flask(__name__)
 
 # ========== 配置 ==========
 ADMIN_PASSWORD = "livzon2026"
-DATA_DIR = "data"
-EXAM_FILE = os.path.join(DATA_DIR, "exams.json")
 
-os.makedirs(DATA_DIR, exist_ok=True)
+# GitHub 持久化存储（Token 从环境变量读取，不要硬编码到代码中）
+GITHUB_TOKEN = os.environ.get("GITHUB_TOKEN", "")
+GITHUB_REPO = "AeverLam/lizhu-compliance-training"
+GITHUB_BRANCH = "main"
+GITHUB_DATA_FILE = "data/exams.json"
+GITHUB_API_URL = f"https://api.github.com/repos/{GITHUB_REPO}/contents/{GITHUB_DATA_FILE}"
+
+# 内存缓存
+_exam_cache_local = []
 
 # ========== 题库 ==========
 # 包含知识点题 + 场景题，全部随机抽取
@@ -324,15 +336,80 @@ QUESTION_BANK = [
 
 
 # ========== 工具函数 ==========
-def load_exams():
-    if not os.path.exists(EXAM_FILE):
+def github_fetch_data():
+    """从 GitHub 获取考试数据"""
+    if not requests or not GITHUB_TOKEN:
         return []
-    with open(EXAM_FILE, 'r', encoding='utf-8') as f:
-        return json.load(f)
+    headers = {
+        "Authorization": f"token {GITHUB_TOKEN}",
+        "Accept": "application/vnd.github.v3+json"
+    }
+    try:
+        resp = requests.get(GITHUB_API_URL, headers=headers, params={"ref": GITHUB_BRANCH}, timeout=10)
+        if resp.status_code == 200:
+            data = resp.json()
+            raw = base64.b64decode(data["content"].replace("\n", "")).decode("utf-8")
+            return json.loads(raw)
+    except Exception:
+        pass
+    return []
+
+def github_push_record(record):
+    """将考试记录推送到 GitHub"""
+    if not requests or not GITHUB_TOKEN:
+        return False
+    headers = {
+        "Authorization": f"token {GITHUB_TOKEN}",
+        "Accept": "application/vnd.github.v3+json"
+    }
+    try:
+        sha = None
+        resp = requests.get(GITHUB_API_URL, headers=headers, params={"ref": GITHUB_BRANCH}, timeout=10)
+        if resp.status_code == 200:
+            sha = resp.json().get("sha")
+        
+        records, _ = load_exams_internal()
+        records.append(record)
+        content_bytes = json.dumps(records, ensure_ascii=False, indent=2).encode("utf-8")
+        
+        payload = {
+            "message": f"exam: {record.get('user_name','?')[:20]} {record['score']}分",
+            "content": base64.b64encode(content_bytes).decode("ascii"),
+            "branch": GITHUB_BRANCH
+        }
+        if sha:
+            payload["sha"] = sha
+        
+        resp = requests.put(GITHUB_API_URL, headers=headers, json=payload, timeout=15)
+        return resp.status_code in (200, 201)
+    except Exception as e:
+        print(f"GitHub push error: {e}")
+        return False
+
+def load_exams_internal():
+    """内部加载：优先 GitHub，失败用缓存"""
+    global _exam_cache_local
+    data = github_fetch_data()
+    if data:
+        _exam_cache_local = data
+        return data, True
+    return _exam_cache_local, False
+
+def load_exams():
+    global _exam_cache_local
+    if _exam_cache_local:
+        return _exam_cache_local
+    data, _ = load_exams_internal()
+    return data
 
 def save_exams(exams):
-    with open(EXAM_FILE, 'w', encoding='utf-8') as f:
-        json.dump(exams, f, ensure_ascii=False, indent=2)
+    global _exam_cache_local
+    _exam_cache_local = exams
+
+def async_save_to_github(record):
+    def _save():
+        github_push_record(record)
+    threading.Thread(target=_save, daemon=True).start()
 
 def generate_exam(n=20):
     """从题库随机抽取 n 道题生成试卷，保证场景题和知识题比例合理"""
@@ -487,6 +564,9 @@ def api_exam_submit():
     exams.append(exam_record)
     save_exams(exams)
     
+    # 异步推送到 GitHub 永久存储
+    async_save_to_github(exam_record)
+    
     del app.exam_cache[exam_id]
     
     return jsonify({
@@ -574,6 +654,10 @@ def api_admin_export():
     
     return "\n".join(csv_lines), 200, {'Content-Type': 'text/csv; charset=utf-8', 'Content-Disposition': 'attachment; filename=exam_result.csv'}
 
+
+# 启动时从 GitHub 加载数据
+if GITHUB_TOKEN:
+    load_exams_internal()
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 10000))
