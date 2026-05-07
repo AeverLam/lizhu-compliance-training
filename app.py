@@ -6,254 +6,319 @@ from datetime import datetime
 app = Flask(__name__)
 
 # ========== 配置 ==========
-ADMIN_PASSWORD = "livzon2026"  # 后台管理密码
+ADMIN_PASSWORD = "livzon2026"
 DATA_DIR = "data"
 EXAM_FILE = os.path.join(DATA_DIR, "exams.json")
-QUESTIONS_FILE = os.path.join(DATA_DIR, "questions.json")
 
 os.makedirs(DATA_DIR, exist_ok=True)
 
-# ========== 题库（从微课内容提取） ==========
+# ========== 题库 ==========
+# 包含知识点题 + 场景题，全部随机抽取
 QUESTION_BANK = [
+    # ===== 模块一：当下的形势 =====
     {
         "id": 1,
         "type": "single",
-        "question": "本次合规速训微课的课时要求是？",
-        "options": ["A. 45分钟", "B. 30分钟", "C. 15分钟", "D. 60分钟"],
-        "answer": 1,
-        "section": "课程信息"
-    },
-    {
-        "id": 2,
-        "type": "single",
-        "question": "本次考核的合格分数线是多少？",
-        "options": ["A. 60分", "B. 70分", "C. 80分", "D. 90分"],
-        "answer": 2,
-        "section": "课程信息"
-    },
-    {
-        "id": 3,
-        "type": "single",
-        "question": "本次课程的完成要求是什么？",
-        "options": ["A. 80%覆盖率 + 60分合格", "B. 90%覆盖率 + 70分合格", "C. 100%覆盖率 + 80分合格", "D. 100%覆盖率 + 90分合格"],
-        "answer": 2,
-        "section": "课程信息"
-    },
-    {
-        "id": 4,
-        "type": "single",
-        "question": "医药反腐集中整治工作是从什么时候开始的？",
-        "options": ["A. 2022年1月", "B. 2023年7月", "C. 2024年3月", "D. 2025年1月"],
-        "answer": 1,
-        "section": "当下的形势"
-    },
-    {
-        "id": 5,
-        "type": "single",
-        "question": "医药代表拜访前必须完成什么？",
-        "options": ["A. 出差申请", "B. 医药代表备案", "C. 产品培训", "D. 销售目标确认"],
-        "answer": 1,
-        "section": "行为红线"
-    },
-    {
-        "id": 6,
-        "type": "multiple",
-        "question": "以下哪些属于商业贿赂的红线行为？（多选）",
-        "options": ["A. 向医生支付现金回扣", "B. 赠送购物卡给医生", "C. 通过CSO变相输送利益", "D. 带医生参加公司组织的学术会议"],
-        "answer": [0, 1, 2],
-        "section": "行为红线"
-    },
-    {
-        "id": 7,
-        "type": "single",
-        "question": "关于讲课费，以下说法正确的是？",
-        "options": ["A. 只要有医生签名就算合规", "B. 必须对应真实的讲课行为", "C. 可以先支付后补讲课", "D. 讲课费标准可以自行决定"],
-        "answer": 1,
-        "section": "案例警示"
-    },
-    {
-        "id": 8,
-        "type": "multiple",
-        "question": "以下哪些属于虚假学术活动的表现？（多选）",
-        "options": ["A. 以学术会议为名组织旅游", "B. 虚构参会人员名单", "C. 组织有真实学术内容的科室会", "D. 以讲课费名义支付回扣"],
-        "answer": [0, 1, 3],
-        "section": "行为红线"
-    },
-    {
-        "id": 9,
-        "type": "single",
-        "question": "根据课程内容，反腐进入什么阶段？",
-        "options": ["A. 初期排查阶段", "B. 深水区阶段", "C. 收尾阶段", "D. 暂停阶段"],
-        "answer": 1,
-        "section": "当下的形势"
-    },
-    {
-        "id": 10,
-        "type": "single",
-        "question": "关于学术活动地点选择，以下哪个是正确的？",
-        "options": ["A. 任何城市都可以", "B. 必须选择旅游度假城市", "C. 应选择有合理学术理由的地点", "D. 由医生决定地点"],
-        "answer": 2,
-        "section": "实操指南"
-    },
-    {
-        "id": 11,
-        "type": "single",
-        "question": "遇到不确定是否合规的场景，首先应该？",
-        "options": ["A. 先做了再说", "B. 问同事", "C. 停下来，问上级或合规部", "D. 自行判断"],
-        "answer": 2,
-        "section": "实操指南"
-    },
-    {
-        "id": 12,
-        "type": "multiple",
-        "question": "以下哪些情况需要立即上报？（多选）",
-        "options": ["A. 上级要求配合做虚假报销", "B. 医生主动索要回扣", "C. 发现有同事疑似违规", "D. 收到监管部门调查通知"],
-        "answer": [0, 1, 2, 3],
-        "section": "实操指南"
-    },
-    {
-        "id": 13,
-        "type": "single",
-        "question": "关于在微信/短信/邮件中讨论费用和利益，正确的做法是？",
-        "options": ["A. 可以在私人微信中讨论", "B. 可以在加密邮件中讨论", "C. 不做此类活动，也不在这些渠道讨论", "D. 只要不留下文字记录就可以"],
-        "answer": 2,
-        "section": "案例警示"
-    },
-    {
-        "id": 14,
-        "type": "single",
-        "question": "课程强调的合规关键判断标准是什么？",
-        "options": ["A. 金额是否超过500元", "B. 是否能向纪检/检察院/媒体解释正当关系", "C. 是否经过领导批准", "D. 是否在公开场合进行"],
-        "answer": 1,
-        "section": "行为红线"
-    },
-    {
-        "id": 15,
-        "type": "single",
-        "question": "医生主动要回扣时，正确的做法是？",
-        "options": ["A. 答应以维护客户关系", "B. 私下给，不做记录", "C. 明确拒绝，做好记录，立即上报", "D. 让医生通过第三方拿"],
-        "answer": 2,
-        "section": "实操指南"
-    },
-    {
-        "id": 16,
-        "type": "single",
-        "question": "关于费用报销，以下哪个是正确的？",
-        "options": ["A. 可以用个人账户代收代付", "B. 可以借用他人身份信息报销", "C. 每一笔报销必须基于真实发生的业务活动", "D. 只要领导签字就可以报销"],
-        "answer": 2,
-        "section": "行为红线"
-    },
-    {
-        "id": 17,
-        "type": "single",
-        "question": "关于科室会请客吃饭，正确的是？",
-        "options": ["A. 可以安排任何档次的餐饮", "B. 可以安排会议简餐，须审批且不超标准", "C. 不能有任何形式的用餐安排", "D. 由医生自行安排后报销"],
-        "answer": 1,
-        "section": "实操指南"
-    },
-    {
-        "id": 18,
-        "type": "single",
-        "question": "医药反腐的监管覆盖范围是？",
-        "options": ["A. 仅限医院", "B. 仅限药企", "C. 医药购销全链条", "D. 仅限销售代表"],
-        "answer": 2,
-        "section": "当下的形势"
-    },
-    {
-        "id": 19,
-        "type": "multiple",
-        "question": "五条行为红线包括哪些？（多选）",
-        "options": ["A. 商业贿赂", "B. 虚假学术活动", "C. 违规拜访和推广", "D. 费用造假和套现", "E. 信息安全和数据合规"],
-        "answer": [0, 1, 2, 3, 4],
-        "section": "行为红线"
-    },
-    {
-        "id": 20,
-        "type": "single",
-        "question": "课程提到反腐的长期趋势是什么？",
-        "options": ["A. 一轮整治后会放松", "B. 不会过去，只会更严", "C. 只针对外资企业", "D. 两年后会结束"],
-        "answer": 1,
-        "section": "总结与承诺"
-    },
-    {
-        "id": 21,
-        "type": "single",
-        "question": "关于CSO合作，以下说法正确的是？",
-        "options": ["A. CSO可以作为利益输送的通道", "B. 可以用CSO变相给医生回扣", "C. 与CSO合作必须确保真实业务能力和服务交付", "D. CSO不需要有实际业务能力"],
-        "answer": 2,
-        "section": "案例警示"
-    },
-    {
-        "id": 22,
-        "type": "single",
-        "question": "学术活动合规检查清单不包括以下哪项？",
-        "options": ["A. 活动目的是否与学术推广相关", "B. 讲者是否具备相应资质", "C. 能否带来最高销售额", "D. 费用预算是否与活动规模匹配"],
-        "answer": 2,
-        "section": "实操指南"
-    },
-    {
-        "id": 23,
-        "type": "multiple",
-        "question": "以下哪些渠道适合上报违规行为？（多选）",
-        "options": ["A. 公司合规部热线", "B. 营销市场总部合规联系人", "C. 匿名举报邮箱", "D. 朋友圈发帖"],
-        "answer": [0, 1, 2],
-        "section": "实操指南"
-    },
-    {
-        "id": 24,
-        "type": "single",
-        "question": "案例四中，代表在微信群里发了什么内容导致被判刑？",
-        "options": ["A. 产品推广广告", "B. 竞品负面信息", "C. 带金销售返利信息", "D. 客户隐私数据"],
-        "answer": 2,
-        "section": "案例警示"
-    },
-    {
-        "id": 25,
-        "type": "single",
-        "question": "课程提出'五句话记住今天'，以下哪句不在其中？",
-        "options": ["A. 反腐不是一阵风", "B. 合规是保护自己", "C. 回扣是行业惯例", "D. 不确定就问"],
-        "answer": 2,
-        "section": "总结与承诺"
-    },
-    {
-        "id": 26,
-        "type": "single",
-        "question": "关于医生拜访，以下做法正确的是？",
-        "options": ["A. 在任何时间都可以拜访", "B. 不用预约，直接去医院", "C. 确认备案后通过医院平台预约", "D. 可以带竞品对比资料去推广"],
-        "answer": 2,
-        "section": "实操指南"
-    },
-    {
-        "id": 27,
-        "type": "single",
-        "question": "超适应症推广属于哪条红线？",
-        "options": ["A. 商业贿赂", "B. 虚假学术活动", "C. 违规拜访和推广", "D. 费用造假"],
-        "answer": 2,
-        "section": "行为红线"
-    },
-    {
-        "id": 28,
-        "type": "single",
-        "question": "本次培训的课程性质是什么？",
+        "question": "本次合规速训微课的课程性质是什么？",
         "options": ["A. 例行年度合规培训", "B. 新员工入职培训", "C. 应对医药反腐深水区的紧急必修课", "D. 自愿参加的选修课"],
         "answer": 2,
         "section": "课程信息"
     },
     {
-        "id": 29,
+        "id": 2,
         "type": "single",
-        "question": "关于'红线标准'中讲课费的判断方法，正确的是？",
-        "options": ["A. 只要有人讲课就算合规", "B. 去掉讲课费后还有动力组织才算真实", "C. 讲课费金额越大越合规", "D. 只要医生签字就可以"],
+        "question": "本次考核的合格分数线及覆盖率要求是？",
+        "options": ["A. 60分合格，80%覆盖率", "B. 80分合格，100%覆盖率", "C. 70分合格，90%覆盖率", "D. 90分合格，100%覆盖率"],
         "answer": 1,
-        "section": "案例警示"
+        "section": "课程信息"
     },
     {
-        "id": 30,
+        "id": 3,
         "type": "single",
-        "question": "遇到'不确定'场景的处理原则是？",
-        "options": ["A. 先做后问 → 事后补报", "B. 停下来 → 问一句 → 留记录", "C. 自己做主 → 出问题再说", "D. 问同事 → 大家说行就行"],
+        "question": "全国医药领域腐败问题集中整治工作是从什么时间正式启动的？",
+        "options": ["A. 2022年1月", "B. 2023年7月", "C. 2024年3月", "D. 2025年1月"],
+        "answer": 1,
+        "section": "当下的形势"
+    },
+    {
+        "id": 4,
+        "type": "single",
+        "question": "当前医药反腐进入了什么阶段？",
+        "options": ["A. 初期排查阶段", "B. 收尾总结阶段", "C. 深水区阶段", "D. 试点阶段"],
+        "answer": 2,
+        "section": "当下的形势"
+    },
+    {
+        "id": 5,
+        "type": "multiple",
+        "question": "当前医药反腐发出了哪些核心信号？（多选）",
+        "options": ["A. 学术会议大面积叫停或缩减", "B. 医药代表备案制严格执行", "C. 讲课费、咨询费严查", "D. 数字化追溯能力提升"],
+        "answer": [0, 1, 2, 3],
+        "section": "当下的形势"
+    },
+
+    # ===== 模块二：行为红线 =====
+    {
+        "id": 6,
+        "type": "multiple",
+        "question": "以下哪些行为属于商业贿赂红线？（多选）",
+        "options": ["A. 向医生支付现金回扣", "B. 赠送购物卡给医生", "C. 通过CSO变相输送利益", "D. 为医生的子女升学买单"],
+        "answer": [0, 1, 2, 3],
+        "section": "行为红线"
+    },
+    {
+        "id": 7,
+        "type": "single",
+        "question": "课程提出的合规关键判断标准是什么？",
+        "options": ["A. 金额是否超过500元", "B. 是否能向纪检/检察院/媒体解释正当关系", "C. 是否经过领导批准", "D. 是否在公开场合进行"],
+        "answer": 1,
+        "section": "行为红线"
+    },
+    {
+        "id": 8,
+        "type": "multiple",
+        "question": "以下哪些属于虚假学术活动？（多选）",
+        "options": ["A. 以学术会议为名组织旅游", "B. 虚构参会人员名单套取会议费用", "C. 学术会议实际内容与报批不符", "D. 以讲课费名义向医生支付回扣"],
+        "answer": [0, 1, 2, 3],
+        "section": "行为红线"
+    },
+    {
+        "id": 9,
+        "type": "single",
+        "question": "医药代表拜访医生前，必须完成什么？",
+        "options": ["A. 出差申请", "B. 医药代表备案，并通过医院指定平台预约", "C. 产品知识考试", "D. 销售目标确认"],
+        "answer": 1,
+        "section": "行为红线"
+    },
+    {
+        "id": 10,
+        "type": "multiple",
+        "question": "以下哪些属于费用造假和套现行为？（多选）",
+        "options": ["A. 虚开发票、虚报差旅", "B. 虚构会议费用", "C. 用个人账户代收代付公司业务款", "D. 与CSO签订虚假服务合同套取费用"],
+        "answer": [0, 1, 2, 3],
+        "section": "行为红线"
+    },
+    {
+        "id": 11,
+        "type": "single",
+        "question": "关于讲课费，以下说法正确的是？",
+        "options": ["A. 只要有医生签名就算合规", "B. 必须对应真实的讲课行为，有真实听众和内容", "C. 可以先支付后补讲课", "D. 讲课费标准可以自行决定"],
+        "answer": 1,
+        "section": "行为红线"
+    },
+    {
+        "id": 12,
+        "type": "single",
+        "question": "关于CSO合作，以下说法正确的是？",
+        "options": ["A. CSO可以作为利益输送通道", "B. 可以与无实际业务能力的CSO合作", "C. CSO必须有真实的业务能力和服务交付", "D. CSO不需要实际办公场所和员工"],
+        "answer": 2,
+        "section": "行为红线"
+    },
+
+    # ===== 模块三：实操指南 =====
+    {
+        "id": 13,
+        "type": "single",
+        "question": "遇到不确定是否合规的场景时，正确的处理原则是？",
+        "options": ["A. 先做了再说", "B. 停下来 → 问上级或合规部 → 留记录", "C. 问同事，大家说行就行", "D. 自己判断，出问题再说"],
         "answer": 1,
         "section": "实操指南"
+    },
+    {
+        "id": 14,
+        "type": "multiple",
+        "question": "以下哪些情况需要立即上报？（多选）",
+        "options": ["A. 上级要求你配合做虚假报销", "B. 医生主动索要回扣", "C. 发现同事有疑似违规行为", "D. 收到监管部门调查通知"],
+        "answer": [0, 1, 2, 3],
+        "section": "实操指南"
+    },
+    {
+        "id": 15,
+        "type": "single",
+        "question": "关于微信/短信/邮件中讨论费用和利益，正确的做法是？",
+        "options": ["A. 不在这些渠道讨论，也不开展涉及费用和利益的活动", "B. 可以在私人微信中讨论", "C. 只要用加密邮件就可以", "D. 只要不留下文字记录就可以"],
+        "answer": 0,
+        "section": "实操指南"
+    },
+    {
+        "id": 16,
+        "type": "single",
+        "question": "医生主动索要回扣时，正确的做法是？",
+        "options": ["A. 答应以维护客户关系", "B. 私下给，不做记录", "C. 明确拒绝、做好记录、立即上报", "D. 让医生通过第三方拿"],
+        "answer": 2,
+        "section": "实操指南"
+    },
+    {
+        "id": 17,
+        "type": "multiple",
+        "question": "学术活动合规检查清单包含哪些内容？（多选）",
+        "options": ["A. 活动目的是否与学术推广直接相关", "B. 讲者是否具备相应资质", "C. 活动地点是否合理（非旅游度假城市）", "D. 是否安排了签到拍照等留痕措施", "E. 费用预算是否与活动规模匹配"],
+        "answer": [0, 1, 2, 3, 4],
+        "section": "实操指南"
+    },
+
+    # ===== 场景题（核心能力考核） =====
+    {
+        "id": 101,
+        "type": "single",
+        "question": "【场景】你计划组织一场消化道领域的学术研讨会，有同事建议安排在海边度假城市，并预留三天自由活动时间。以下做法正确的是？",
+        "options": ["A. 同意，学术会议与休闲结合更好", "B. 拒绝，学术活动地点要有合理性，学术内容占主体，不能出现半天开会三天玩", "C. 把学术内容压缩到半天，其余时间自由活动", "D. 只要医生高兴就行"],
+        "answer": 1,
+        "section": "场景题"
+    },
+    {
+        "id": 102,
+        "type": "single",
+        "question": "【场景】一位核心处方医生私下对你说：\"这个月多开点你们的药，每盒给我返30块就行。\"你应该怎么做？",
+        "options": ["A. 答应他，毕竟是大客户", "B. 口头答应但不记录", "C. 明确拒绝，做好记录，立即通过合规渠道上报", "D. 让他写个收据就行"],
+        "answer": 2,
+        "section": "场景题"
+    },
+    {
+        "id": 103,
+        "type": "single",
+        "question": "【场景】你的上级要求你帮一位医生的个人旅游费用\"走一下学术会议费报销\"，并表示\"大家都这么干\"。你应该怎么做？",
+        "options": ["A. 照做，上级的话不能不听", "B. 拒绝并上报，这是虚假报销，属于红线行为", "C. 帮他想办法换成其他名目报销", "D. 私下帮医生付了"],
+        "answer": 1,
+        "section": "场景题"
+    },
+    {
+        "id": 104,
+        "type": "single",
+        "question": "【场景】你正在准备一场科室会，科室主任说：\"讲就不用讲了，PPT我签个名，讲课费照给就行。\"你应该怎么做？",
+        "options": ["A. 同意，省时省力", "B. 拒绝，讲课费必须对应真实的讲课行为，有真实听众和内容", "C. 让主任象征性讲5分钟", "D. 把讲课费换成其他形式支付"],
+        "answer": 1,
+        "section": "场景题"
+    },
+    {
+        "id": 105,
+        "type": "single",
+        "question": "【场景】医生在微信群里@你说：\"你们竞品那边每盒返5块，你们能返多少？\"你应该怎么处理？",
+        "options": ["A. 直接在群里回复一个更有竞争力的价格", "B. 加他私聊讨论", "C. 不在微信讨论费用和利益安排，也不开展此类活动", "D. 让医生删掉消息就当没发生过"],
+        "answer": 2,
+        "section": "场景题"
+    },
+    {
+        "id": 106,
+        "type": "single",
+        "question": "【场景】你的医药代表备案还没完成，但经理催你这周必须去医院拜访关键医生。你应该怎么做？",
+        "options": ["A. 先去拜访，备案补上就行", "B. 先完成备案，再通过医院指定平台预约拜访", "C. 让经理帮你想办法绕过备案", "D. 趁医院不检查时去"],
+        "answer": 1,
+        "section": "场景题"
+    },
+    {
+        "id": 107,
+        "type": "single",
+        "question": "【场景】你在组织科室会时，有同事建议：\"参会名单多写几个医生名字，这样费用能多报一些。\"你应该怎么做？",
+        "options": ["A. 同意，反正不会有人查", "B. 拒绝，参会名单必须真实，虚构参会人员属于红线行为", "C. 中间折中，只多报一两个", "D. 让同事自己决定"],
+        "answer": 1,
+        "section": "场景题"
+    },
+    {
+        "id": 108,
+        "type": "single",
+        "question": "【场景】医生提出要你给他孩子安排夏令营费用，他说\"就当是正常的学术支持费用来走\"。你应该怎么做？",
+        "options": ["A. 帮他安排，用学术费用报销", "B. 私下自己掏钱帮他付", "C. 拒绝，为医生个人活动买单是商业贿赂红线行为", "D. 让他找别的代表帮忙"],
+        "answer": 2,
+        "section": "场景题"
+    },
+    {
+        "id": 109,
+        "type": "single",
+        "question": "【场景】你发现一个同事在报销时虚报差旅费，金额还不小。你应该怎么做？",
+        "options": ["A. 装作不知道，不关我的事", "B. 私下提醒他别这样做了", "C. 通过合规渠道上报，发现疑似违规行为要立即上报", "D. 跟他一起做，反正不会被发现"],
+        "answer": 2,
+        "section": "场景题"
+    },
+    {
+        "id": 110,
+        "type": "single",
+        "question": "【场景】竞品公司的代表在给医生回扣，导致你跟进的一位医生也开始暗示要好处。你应该怎么做？",
+        "options": ["A. 也跟着给回扣，不然丢客户", "B. 用产品临床价值和专业服务赢得医生，合规体系正在建设中", "C. 向上级申请一笔\"特殊费用\"", "D. 放弃这个医生"],
+        "answer": 1,
+        "section": "场景题"
+    },
+    {
+        "id": 111,
+        "type": "single",
+        "question": "【场景】你在非工作时间（周末）接到一位医生电话，说他刚完成一台手术，想让你过去聊聊新产品的用法。以下做法正确的是？",
+        "options": ["A. 马上过去，医生要求不能拒绝", "B. 约定在非约定场所见面", "C. 告知医生在工作时间和医院指定平台预约后正式拜访", "D. 在电话里直接进行超适应症推广"],
+        "answer": 2,
+        "section": "场景题"
+    },
+    {
+        "id": 112,
+        "type": "single",
+        "question": "【场景】一位老同事告诉你：\"我们这个品种竞争太激烈，不搞点返利根本推不动，你在开科室会的时候可以暗示一下医生用量和费用的关系。\"你应该？",
+        "options": ["A. 照做，老同事经验丰富", "B. 拒绝，推广内容严格按产品说明书进行，不能涉及费用/利益", "C. 只在私下场合说", "D. 让同事自己去做"],
+        "answer": 1,
+        "section": "场景题"
+    },
+    {
+        "id": 113,
+        "type": "single",
+        "question": "【场景】医生问你：\"你们这个药能不能用于XX适应症（该适应症不在说明书范围内）？如果可以我就多用。\"你应该怎么做？",
+        "options": ["A. 告诉医生可以用，已经有很多人这么用了", "B. 引导医生联系医学部处理，不做超适应症推广", "C. 口头告诉医生但不要留下记录", "D. 给医生看竞品的超适应症资料"],
+        "answer": 1,
+        "section": "场景题"
+    },
+    {
+        "id": 114,
+        "type": "single",
+        "question": "【场景】一位CSO负责人找到你，提出你们可以签一份\"市场推广服务合同\"，他负责走账，把一部分钱以讲课费名义给到医生。你应该？",
+        "options": ["A. 合作，CSO模式很多人都用", "B. 拒绝，这是典型的利用CSO变相输送利益，属于红线行为", "C. 私下口头合作不留合同", "D. 建议他用别的名目"],
+        "answer": 1,
+        "section": "场景题"
+    },
+    {
+        "id": 115,
+        "type": "single",
+        "question": "【场景】部门要组织一场学术推广活动，经理说为了节省预算，\"讲者资质不用太严格，找个关系好的医生挂个名就行\"。你应该？",
+        "options": ["A. 照做，节省预算很重要", "B. 坚持讲者必须有资质，讲课内容须经过医学部审核", "C. 象征性审核一下", "D. 让经理自己负责"],
+        "answer": 1,
+        "section": "场景题"
+    },
+    {
+        "id": 116,
+        "type": "single",
+        "question": "【场景】你刚完成医药代表备案，第一次去医院拜访。进门时发现门诊走廊里挤了很多患者，医生匆匆打了个招呼。以下做法正确的是？",
+        "options": ["A. 趁机塞给他一些产品资料和一份小礼物", "B. 只使用公司批准的推广材料，不做超适应症推广，在CRM系统中如实记录", "C. 约医生下班后到附近餐厅详谈", "D. 把资料交给护士让她转交"],
+        "answer": 1,
+        "section": "场景题"
+    },
+    {
+        "id": 117,
+        "type": "single",
+        "question": "【场景】有媒体记者联系你，询问公司某产品的推广费用和医生合作情况。你应该？",
+        "options": ["A. 如实回答记者的问题", "B. 立即上报，收到媒体询问属于需要立即上报的情况", "C. 让记者发邮件来", "D. 回避并删除联系方式"],
+        "answer": 1,
+        "section": "场景题"
+    },
+    {
+        "id": 118,
+        "type": "single",
+        "question": "【场景】一位关键医生要过生日了，他暗示你\"有没有什么表示\"。以下做法合规的是？",
+        "options": ["A. 送一张500元的购物卡", "B. 发一个微信红包", "C. 仅限公司统一发放的合规推广物料，金额严格控制在公司标准内", "D. 请他去高档餐厅吃饭"],
+        "answer": 2,
+        "section": "场景题"
+    },
+
+    # ===== 总结与承诺 =====
+    {
+        "id": 21,
+        "type": "single",
+        "question": "医药反腐的长期趋势是什么？",
+        "options": ["A. 一轮整治后会放松", "B. 不会过去，只会更严", "C. 只针对外资企业", "D. 两年后会结束"],
+        "answer": 1,
+        "section": "总结与承诺"
+    },
+    {
+        "id": 22,
+        "type": "single",
+        "question": "课程强调的核心理念是？",
+        "options": ["A. 合规是公司在为难你", "B. 合规是保护自己，监管在盯着你", "C. 回扣是行业惯例", "D. 出事了再说"],
+        "answer": 1,
+        "section": "总结与承诺"
     },
 ]
 
@@ -270,11 +335,27 @@ def save_exams(exams):
         json.dump(exams, f, ensure_ascii=False, indent=2)
 
 def generate_exam(n=20):
-    """从题库随机抽取 n 道题生成试卷"""
-    bank = QUESTION_BANK.copy()
-    random.shuffle(bank)
-    selected = bank[:n]
-    # 重新编号
+    """从题库随机抽取 n 道题生成试卷，保证场景题和知识题比例合理"""
+    # 分为知识题和场景题
+    knowledge = [q for q in QUESTION_BANK if q["section"] != "场景题"]
+    scenario = [q for q in QUESTION_BANK if q["section"] == "场景题"]
+    
+    random.shuffle(knowledge)
+    random.shuffle(scenario)
+    
+    # 抽取8道场景题 + 12道知识题
+    selected_scenario = scenario[:8]
+    selected_knowledge = knowledge[:12]
+    
+    # 如果场景题不够8道，用知识题补
+    if len(selected_scenario) < 8:
+        extra = knowledge[12:12 + (8 - len(selected_scenario))]
+        selected_knowledge = knowledge[:12 + (8 - len(selected_scenario))]
+        selected_scenario = scenario + extra[:8 - len(scenario)]
+    
+    selected = selected_scenario + selected_knowledge
+    random.shuffle(selected)
+    
     for i, q in enumerate(selected):
         q = q.copy()
         q["exam_order"] = i + 1
@@ -282,7 +363,6 @@ def generate_exam(n=20):
     return selected
 
 def calculate_score(answers, questions):
-    """根据答案计算得分，每题5分"""
     total = len(questions)
     correct = 0
     details = []
@@ -340,11 +420,9 @@ def health():
 # ========== API 路由 ==========
 @app.route('/api/exam/generate', methods=['GET'])
 def api_generate_exam():
-    """生成一套试题（不返回正确答案）"""
     exam_id = hashlib.md5(str(time.time()).encode()).hexdigest()[:12]
     questions = generate_exam(20)
     
-    # 保存到临时存储，不含答案
     safe_questions = []
     for q in questions:
         sq = {
@@ -357,7 +435,6 @@ def api_generate_exam():
         }
         safe_questions.append(sq)
     
-    # 内存中缓存正确答案（考试ID -> 试题）
     if not hasattr(app, 'exam_cache'):
         app.exam_cache = {}
     app.exam_cache[exam_id] = questions
@@ -365,13 +442,12 @@ def api_generate_exam():
     return jsonify({
         "exam_id": exam_id,
         "total": len(safe_questions),
-        "time_limit": 30,  # 30分钟
+        "time_limit": 30,
         "questions": safe_questions
     })
 
 @app.route('/api/exam/submit', methods=['POST'])
 def api_exam_submit():
-    """提交答案并评分"""
     data = request.json
     exam_id = data.get("exam_id")
     user_info = data.get("user_info", {})
@@ -384,7 +460,6 @@ def api_exam_submit():
     score, correct, total, details = calculate_score(answers, questions)
     passed = score >= 80
     
-    # 只保留答题详情中需要的信息
     result_details = []
     for d, q in zip(details, questions):
         result_details.append({
@@ -395,7 +470,6 @@ def api_exam_submit():
             "section": q["section"]
         })
     
-    # 保存考试记录
     exam_record = {
         "exam_id": exam_id,
         "user_name": user_info.get("name", ""),
@@ -413,7 +487,6 @@ def api_exam_submit():
     exams.append(exam_record)
     save_exams(exams)
     
-    # 清除缓存
     del app.exam_cache[exam_id]
     
     return jsonify({
@@ -427,7 +500,6 @@ def api_exam_submit():
 
 @app.route('/api/admin/login', methods=['POST'])
 def api_admin_login():
-    """管理后台登录"""
     data = request.json
     password = data.get("password", "")
     if password == ADMIN_PASSWORD:
@@ -436,22 +508,18 @@ def api_admin_login():
 
 @app.route('/api/admin/exams', methods=['GET'])
 def api_admin_exams():
-    """获取所有考试记录"""
     token = request.headers.get("Authorization", "").replace("Bearer ", "")
     expected = hashlib.md5(ADMIN_PASSWORD.encode()).hexdigest()
     if token != expected:
         return jsonify({"error": "未授权"}), 401
     
     exams = load_exams()
-    # 按时间倒序
     exams.sort(key=lambda x: x.get("submit_time", ""), reverse=True)
     
-    # 统计
     total = len(exams)
     passed_count = sum(1 for e in exams if e.get("passed"))
     avg_score = sum(e["score"] for e in exams) / total if total > 0 else 0
     
-    # 返回时不包含答案详情以减小数据量（详情可单独获取）
     summary = []
     for e in exams:
         summary.append({
@@ -479,7 +547,6 @@ def api_admin_exams():
 
 @app.route('/api/admin/exam/<exam_id>', methods=['GET'])
 def api_admin_exam_detail(exam_id):
-    """获取单次考试详细记录"""
     token = request.headers.get("Authorization", "").replace("Bearer ", "")
     expected = hashlib.md5(ADMIN_PASSWORD.encode()).hexdigest()
     if token != expected:
@@ -493,7 +560,6 @@ def api_admin_exam_detail(exam_id):
 
 @app.route('/api/admin/export', methods=['GET'])
 def api_admin_export():
-    """导出考试数据为CSV"""
     token = request.headers.get("Authorization", "").replace("Bearer ", "")
     expected = hashlib.md5(ADMIN_PASSWORD.encode()).hexdigest()
     if token != expected:
