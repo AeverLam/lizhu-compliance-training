@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>丽珠医药营销市场总部 · 合规速训微课 - 在线考核</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+    background: linear-gradient(135deg, #1e3a5f 0%, #2d5a87 100%);
+    min-height: 100vh;
+}
+.container { max-width: 900px; margin: 0 auto; padding: 20px; }
+
+/* 登录页 */
+.login-card {
+    background: white;
+    border-radius: 20px;
+    padding: 50px;
+    margin-top: 60px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+}
+.login-card h1 {
+    color: #1e3a5f;
+    text-align: center;
+    font-size: 2em;
+    margin-bottom: 10px;
+}
+.login-card .subtitle {
+    text-align: center;
+    color: #666;
+    margin-bottom: 40px;
+    font-size: 1.1em;
+}
+.form-group { margin-bottom: 20px; }
+.form-group label {
+    display: block;
+    color: #1e3a5f;
+    font-weight: 600;
+    margin-bottom: 8px;
+    font-size: 0.95em;
+}
+.form-group input, .form-group select {
+    width: 100%;
+    padding: 14px 16px;
+    border: 2px solid #e0e0e0;
+    border-radius: 10px;
+    font-size: 1em;
+    transition: border-color 0.3s;
+}
+.form-group input:focus, .form-group select:focus {
+    border-color: #1e3a5f;
+    outline: none;
+}
+.btn {
+    display: block;
+    width: 100%;
+    padding: 16px;
+    background: linear-gradient(135deg, #1e3a5f, #2d5a87);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 1.2em;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    margin-top: 30px;
+}
+.btn:hover { transform: translateY(-2px); box-shadow: 0 5px 20px rgba(0,0,0,0.2); }
+.btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+/* 考试页 */
+.exam-header {
+    background: white;
+    border-radius: 15px;
+    padding: 20px 30px;
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+    position: sticky;
+    top: 10px;
+    z-index: 100;
+}
+.exam-header h2 { color: #1e3a5f; font-size: 1.2em; }
+.timer { font-size: 1.4em; font-weight: bold; }
+.timer.warning { color: #dc2626; animation: blink 1s infinite; }
+@keyframes blink { 50% { opacity: 0.3; } }
+.progress-text { color: #666; font-size: 0.95em; }
+
+.question-card {
+    background: white;
+    border-radius: 15px;
+    padding: 35px;
+    margin-bottom: 20px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+}
+.question-num {
+    color: #1e3a5f;
+    font-weight: bold;
+    font-size: 1.1em;
+    margin-bottom: 5px;
+}
+.question-type {
+    display: inline-block;
+    background: #e8f0fe;
+    color: #1e3a5f;
+    padding: 3px 12px;
+    border-radius: 15px;
+    font-size: 0.8em;
+    margin-left: 10px;
+}
+.question-text {
+    font-size: 1.15em;
+    line-height: 1.7;
+    margin: 20px 0;
+    color: #333;
+}
+.option-item {
+    display: block;
+    padding: 14px 18px;
+    margin-bottom: 10px;
+    border: 2px solid #e0e0e0;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 1.05em;
+}
+.option-item:hover { border-color: #1e3a5f; background: #f0f4f8; }
+.option-item.selected {
+    border-color: #1e3a5f;
+    background: #e8f0fe;
+    font-weight: 500;
+}
+.option-item input { display: none; }
+.nav-buttons {
+    display: flex;
+    gap: 15px;
+    margin-top: 30px;
+}
+.nav-buttons .btn { width: auto; flex: 1; }
+
+/* 结果页 */
+.result-card {
+    background: white;
+    border-radius: 20px;
+    padding: 50px;
+    margin-top: 60px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    text-align: center;
+}
+.result-score {
+    font-size: 5em;
+    font-weight: bold;
+    margin: 30px 0;
+}
+.result-score.passed { color: #16a34a; }
+.result-score.failed { color: #dc2626; }
+.result-msg {
+    font-size: 1.5em;
+    margin-bottom: 20px;
+    font-weight: bold;
+}
+.result-msg.passed { color: #16a34a; }
+.result-msg.failed { color: #dc2626; }
+.result-stats { color: #666; font-size: 1.1em; margin-bottom: 30px; }
+
+/* 答题详情 */
+.detail-section {
+    background: white;
+    border-radius: 15px;
+    padding: 30px;
+    margin-top: 30px;
+    text-align: left;
+}
+.detail-section h3 { color: #1e3a5f; margin-bottom: 20px; text-align: center; }
+.detail-item {
+    padding: 15px;
+    margin-bottom: 12px;
+    border-radius: 10px;
+    border-left: 4px solid #e0e0e0;
+}
+.detail-item.correct { border-left-color: #16a34a; background: #f0fdf4; }
+.detail-item.wrong { border-left-color: #dc2626; background: #fef2f2; }
+.detail-item .q-text { font-weight: 500; margin-bottom: 8px; }
+.detail-item .a-info { font-size: 0.9em; color: #666; }
+.correct-icon { color: #16a34a; font-weight: bold; }
+.wrong-icon { color: #dc2626; font-weight: bold; }
+
+/* 响应式 */
+@media (max-width: 600px) {
+    .login-card, .result-card { padding: 30px 20px; margin-top: 30px; }
+    .exam-header { flex-direction: column; gap: 10px; }
+    .question-card { padding: 20px; }
+}
+</style>
+</head>
+<body>
+<div class="container" id="app">
+
+<!-- ===== 登录页 ===== -->
+<div id="loginPage">
+    <div class="login-card">
+        <h1>📝 合规速训微课</h1>
+        <p class="subtitle">在线考核 · 30分钟 · 20道题 · 80分合格</p>
+        <div class="form-group">
+            <label>👤 姓名 *</label>
+            <input type="text" id="userName" placeholder="请输入您的姓名" required>
+        </div>
+        <div class="form-group">
+            <label>🏢 部门</label>
+            <input type="text" id="userDept" placeholder="如：市场推广部">
+        </div>
+        <div class="form-group">
+            <label>📱 手机号</label>
+            <input type="text" id="userPhone" placeholder="请输入手机号">
+        </div>
+        <p style="text-align: center; color: #999; font-size: 0.85em; margin-top: 15px;">
+            ⚠️ 试卷随机生成，每题5分，共100分<br>
+            80分及以上为合格，不合格需重新学习
+        </p>
+        <button class="btn" onclick="startExam()">开始考试</button>
+    </div>
+</div>
+
+<!-- ===== 考试页 ===== -->
+<div id="examPage" style="display:none;">
+    <div class="exam-header">
+        <h2>📝 在线考核</h2>
+        <div class="timer" id="timer">30:00</div>
+        <div class="progress-text" id="progress">0/20</div>
+    </div>
+    <div id="questionsContainer"></div>
+    <div class="nav-buttons">
+        <button class="btn" id="prevBtn" onclick="prevQuestion()" style="display:none;">⬅ 上一题</button>
+        <button class="btn" id="nextBtn" onclick="nextQuestion()">下一题 ➡</button>
+        <button class="btn" id="submitBtn" style="background: linear-gradient(135deg, #dc2626, #b91c1c); display:none;" onclick="submitExam()">提交答卷</button>
+    </div>
+</div>
+
+<!-- ===== 结果页 ===== -->
+<div id="resultPage" style="display:none;"></div>
+
+</div>
+
+<script>
+let examId = null;
+let questions = [];
+let answers = {};
+let currentIndex = 0;
+let timeLeft = 30 * 60; // 30分钟
+let timerInterval = null;
+
+async function startExam() {
+    const name = document.getElementById('userName').value.trim();
+    if (!name) { alert('请输入姓名'); return; }
+    
+    document.getElementById('loginPage').style.display = 'none';
+    document.getElementById('examPage').style.display = 'block';
+    
+    // 生成试卷
+    const resp = await fetch('/api/exam/generate');
+    const data = await resp.json();
+    examId = data.exam_id;
+    questions = data.questions;
+    
+    // 初始化答案
+    questions.forEach((q, i) => {
+        if (q.type === 'multiple') {
+            answers[i] = [];
+        } else {
+            answers[i] = null;
+        }
+    });
+    
+    renderCurrentQuestion();
+    updateNavButtons();
+    startTimer();
+}
+
+function renderCurrentQuestion() {
+    const container = document.getElementById('questionsContainer');
+    const q = questions[currentIndex];
+    if (!q) return;
+    
+    let typeLabel = q.type === 'multiple' ? '多选' : '单选';
+    
+    let html = `<div class="question-card">
+        <div class="question-num">
+            第 ${currentIndex+1} 题 / 共 ${questions.length} 题
+            <span class="question-type">${typeLabel}</span>
+        </div>
+        <div class="question-text">${q.question}</div>`;
+    
+    q.options.forEach((opt, oi) => {
+        let selected = false;
+        if (q.type === 'multiple') {
+            selected = (answers[currentIndex] || []).includes(oi);
+        } else {
+            selected = answers[currentIndex] === oi;
+        }
+        let cls = selected ? 'option-item selected' : 'option-item';
+        html += `<label class="${cls}" onclick="selectOption(${oi})">${opt}</label>`;
+    });
+    
+    html += '</div>';
+    container.innerHTML = html;
+    document.getElementById('progress').textContent = `${currentIndex+1}/${questions.length}`;
+    
+    // 标记已答题
+    const answeredCount = Object.values(answers).filter(a => {
+        if (Array.isArray(a)) return a.length > 0;
+        return a !== null;
+    }).length;
+}
+
+function selectOption(oi) {
+    const q = questions[currentIndex];
+    if (q.type === 'multiple') {
+        let arr = answers[currentIndex] || [];
+        let idx = arr.indexOf(oi);
+        if (idx > -1) arr.splice(idx, 1);
+        else arr.push(oi);
+        answers[currentIndex] = arr;
+    } else {
+        answers[currentIndex] = oi;
+    }
+    renderCurrentQuestion();
+}
+
+function nextQuestion() {
+    if (currentIndex < questions.length - 1) {
+        currentIndex++;
+        renderCurrentQuestion();
+    }
+    updateNavButtons();
+}
+
+function prevQuestion() {
+    if (currentIndex > 0) {
+        currentIndex--;
+        renderCurrentQuestion();
+    }
+    updateNavButtons();
+}
+
+function updateNavButtons() {
+    document.getElementById('prevBtn').style.display = currentIndex > 0 ? 'block' : 'none';
+    document.getElementById('nextBtn').style.display = currentIndex < questions.length - 1 ? 'block' : 'none';
+    document.getElementById('submitBtn').style.display = currentIndex >= questions.length - 1 ? 'block' : 'none';
+}
+
+function startTimer() {
+    timerInterval = setInterval(() => {
+        timeLeft--;
+        const mins = Math.floor(timeLeft / 60);
+        const secs = timeLeft % 60;
+        const display = `${String(mins).padStart(2,'0')}:${String(secs).padStart(2,'0')}`;
+        document.getElementById('timer').textContent = display;
+        
+        if (timeLeft <= 300) {
+            document.getElementById('timer').classList.add('warning');
+        }
+        if (timeLeft <= 0) {
+            clearInterval(timerInterval);
+            alert('考试时间到！系统将自动提交。');
+            submitExam();
+        }
+    }, 1000);
+}
+
+async function submitExam() {
+    if (!confirm('确定要提交答卷吗？提交后不可修改。')) return;
+    
+    clearInterval(timerInterval);
+    document.getElementById('examPage').style.display = 'none';
+    
+    // 转换答案格式
+    let formattedAnswers = {};
+    for (let [key, val] of Object.entries(answers)) {
+        formattedAnswers[key] = val;
+    }
+    
+    const userInfo = {
+        name: document.getElementById('userName').value.trim(),
+        dept: document.getElementById('userDept').value.trim(),
+        phone: document.getElementById('userPhone').value.trim()
+    };
+    
+    const resp = await fetch('/api/exam/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            exam_id: examId,
+            user_info: userInfo,
+            answers: formattedAnswers
+        })
+    });
+    
+    const result = await resp.json();
+    showResult(result);
+}
+
+function showResult(result) {
+    const passed = result.passed;
+    const cls = passed ? 'passed' : 'failed';
+    const msg = passed ? '🎉 恭喜通过！' : '😞 未通过，请重新学习后再考';
+    const emoji = passed ? '✅' : '❌';
+    
+    let detailsHtml = '<div class="detail-section"><h3>📋 答题详情</h3>';
+    result.details.forEach((d, i) => {
+        const icls = d.is_correct ? 'correct' : 'wrong';
+        const icon = d.is_correct ? '✅' : '❌';
+        const userAns = Array.isArray(d.user_answer) 
+            ? d.user_answer.map(a => String.fromCharCode(65+a)).join(', ')
+            : (d.user_answer !== null && d.user_answer !== undefined ? String.fromCharCode(65+parseInt(d.user_answer)) : '未作答');
+        const correctAns = Array.isArray(d.correct_answer)
+            ? d.correct_answer.map(a => String.fromCharCode(65+a)).join(', ')
+            : String.fromCharCode(65+d.correct_answer);
+        
+        detailsHtml += `<div class="detail-item ${icls}">
+            <div class="q-text">${icon} ${i+1}. ${d.question}</div>
+            <div class="a-info">你的答案: ${userAns} | 正确答案: ${correctAns}</div>
+        </div>`;
+    });
+    detailsHtml += '</div>';
+    
+    document.getElementById('resultPage').innerHTML = `
+        <div class="result-card">
+            <div style="font-size: 3em;">${emoji}</div>
+            <div class="result-score ${cls}">${result.score}</div>
+            <div style="font-size: 1.2em; color: #666;">分</div>
+            <div class="result-msg ${cls}">${msg}</div>
+            <div class="result-stats">
+                正确 ${result.correct} 题 / 共 ${result.total} 题 · 正确率 ${Math.round(result.correct/result.total*100)}%
+            </div>
+            ${!passed ? '<button class="btn" onclick="location.reload()">重新考试</button>' : ''}
+            <button class="btn" onclick="location.reload()" style="${passed?'':'display:none'}">完成</button>
+        </div>
+        ${detailsHtml}
+    `;
+    document.getElementById('resultPage').style.display = 'block';
+}
+</script>
+</body>
+</html>

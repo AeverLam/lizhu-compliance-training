@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>合规速训微课 - 后台管理</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+    background: #f0f4f8;
+    min-height: 100vh;
+}
+.container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+
+.login-card {
+    background: white;
+    border-radius: 20px;
+    padding: 60px;
+    max-width: 400px;
+    margin: 120px auto;
+    text-align: center;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+}
+.login-card h1 { color: #1e3a5f; margin-bottom: 30px; }
+.login-card input {
+    width: 100%;
+    padding: 14px;
+    border: 2px solid #e0e0e0;
+    border-radius: 10px;
+    font-size: 1.1em;
+    text-align: center;
+    margin-bottom: 20px;
+}
+.btn {
+    padding: 14px 30px;
+    background: linear-gradient(135deg, #1e3a5f, #2d5a87);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 1.1em;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+.btn:hover { transform: translateY(-2px); }
+.btn.small { padding: 8px 16px; font-size: 0.9em; }
+.btn.danger { background: #dc2626; }
+
+/* 管理页面 */
+.header {
+    background: white;
+    border-radius: 15px;
+    padding: 25px 35px;
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+}
+.header h1 { color: #1e3a5f; font-size: 1.5em; }
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 15px;
+    margin-bottom: 20px;
+}
+.stat-card {
+    background: white;
+    border-radius: 15px;
+    padding: 25px;
+    text-align: center;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+}
+.stat-card .number { font-size: 2.5em; font-weight: bold; color: #1e3a5f; }
+.stat-card .label { color: #666; margin-top: 5px; font-size: 0.9em; }
+.stat-card.green .number { color: #16a34a; }
+.stat-card.red .number { color: #dc2626; }
+
+.table-card {
+    background: white;
+    border-radius: 15px;
+    padding: 25px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    overflow-x: auto;
+}
+.table-card h3 { color: #1e3a5f; margin-bottom: 20px; }
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+th {
+    background: #1e3a5f;
+    color: white;
+    padding: 14px 16px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 0.9em;
+}
+td {
+    padding: 12px 16px;
+    border-bottom: 1px solid #e8eef4;
+    font-size: 0.9em;
+}
+tr:hover { background: #f8fafc; }
+.pass-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 15px;
+    font-size: 0.85em;
+    font-weight: 600;
+}
+.pass-badge.passed { background: #dcfce7; color: #16a34a; }
+.pass-badge.failed { background: #fef2f2; color: #dc2626; }
+
+.search-bar {
+    margin-bottom: 20px;
+    display: flex;
+    gap: 10px;
+}
+.search-bar input {
+    flex: 1;
+    padding: 10px 16px;
+    border: 2px solid #e0e0e0;
+    border-radius: 10px;
+    font-size: 1em;
+}
+
+@media (max-width: 768px) {
+    .stats-grid { grid-template-columns: repeat(2, 1fr); }
+    .login-card { margin: 40px auto; padding: 40px 20px; }
+}
+</style>
+</head>
+<body>
+<div class="container" id="app">
+
+<!-- 登录页 -->
+<div id="loginPage">
+    <div class="login-card">
+        <h1>🔐 后台管理</h1>
+        <p style="color: #999; margin-bottom: 20px;">合规速训微课考试管理</p>
+        <input type="password" id="password" placeholder="请输入管理密码" onkeyup="if(event.key==='Enter')login()">
+        <button class="btn" onclick="login()">登录</button>
+    </div>
+</div>
+
+<!-- 管理页 -->
+<div id="adminPage" style="display:none;">
+    <div class="header">
+        <h1>📊 合规速训微课 · 考试成绩管理</h1>
+        <div>
+            <button class="btn small" onclick="exportCSV()">📥 导出CSV</button>
+            <button class="btn small danger" onclick="logout()">退出</button>
+        </div>
+    </div>
+    
+    <div class="stats-grid">
+        <div class="stat-card"><div class="number" id="statTotal">0</div><div class="label">总参考人数</div></div>
+        <div class="stat-card green"><div class="number" id="statPassed">0</div><div class="label">合格人数</div></div>
+        <div class="stat-card red"><div class="number" id="statFailed">0</div><div class="label">不合格人数</div></div>
+        <div class="stat-card"><div class="number" id="statRate">0%</div><div class="label">合格率</div></div>
+        <div class="stat-card"><div class="number" id="statAvg">0</div><div class="label">平均分</div></div>
+    </div>
+    
+    <div class="table-card">
+        <h3>📋 考试记录</h3>
+        <div class="search-bar">
+            <input type="text" id="searchInput" placeholder="搜索姓名、部门或手机号..." oninput="filterTable()">
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>序号</th>
+                    <th>姓名</th>
+                    <th>部门</th>
+                    <th>手机号</th>
+                    <th>分数</th>
+                    <th>正确/总题</th>
+                    <th>结果</th>
+                    <th>提交时间</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody"></tbody>
+        </table>
+    </div>
+</div>
+
+</div>
+
+<script>
+let token = null;
+let allRecords = [];
+
+async function login() {
+    const password = document.getElementById('password').value;
+    if (!password) { alert('请输入密码'); return; }
+    
+    const resp = await fetch('/api/admin/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password })
+    });
+    const data = await resp.json();
+    
+    if (data.success) {
+        token = data.token;
+        document.getElementById('loginPage').style.display = 'none';
+        document.getElementById('adminPage').style.display = 'block';
+        loadData();
+    } else {
+        alert('密码错误');
+    }
+}
+
+async function loadData() {
+    const resp = await fetch('/api/admin/exams', {
+        headers: { 'Authorization': 'Bearer ' + token }
+    });
+    const data = await resp.json();
+    
+    // 更新统计
+    document.getElementById('statTotal').textContent = data.stats.total;
+    document.getElementById('statPassed').textContent = data.stats.passed;
+    document.getElementById('statFailed').textContent = data.stats.failed;
+    document.getElementById('statRate').textContent = data.stats.pass_rate + '%';
+    document.getElementById('statAvg').textContent = data.stats.avg_score;
+    
+    allRecords = data.records;
+    renderTable(allRecords);
+}
+
+function renderTable(records) {
+    const tbody = document.getElementById('tableBody');
+    tbody.innerHTML = records.map((r, i) => `
+        <tr>
+            <td>${i + 1}</td>
+            <td><strong>${r.user_name || '-'}</strong></td>
+            <td>${r.user_dept || '-'}</td>
+            <td>${r.user_phone || '-'}</td>
+            <td><strong>${r.score}</strong></td>
+            <td>${r.correct}/${r.total}</td>
+            <td><span class="pass-badge ${r.passed ? 'passed' : 'failed'}">${r.passed ? '合格' : '不合格'}</span></td>
+            <td>${r.submit_time ? r.submit_time.replace('T',' ').substring(0,16) : '-'}</td>
+            <td><button class="btn small" onclick="viewDetail('${r.exam_id}')">详情</button></td>
+        </tr>
+    `).join('');
+}
+
+function filterTable() {
+    const keyword = document.getElementById('searchInput').value.toLowerCase();
+    const filtered = allRecords.filter(r => 
+        (r.user_name || '').toLowerCase().includes(keyword) ||
+        (r.user_dept || '').toLowerCase().includes(keyword) ||
+        (r.user_phone || '').toLowerCase().includes(keyword)
+    );
+    renderTable(filtered);
+}
+
+async function viewDetail(examId) {
+    const resp = await fetch(`/api/admin/exam/${examId}`, {
+        headers: { 'Authorization': 'Bearer ' + token }
+    });
+    const data = await resp.json();
+    
+    let detailHtml = `<h3>${data.user_name} - 考试详情（${data.score}分）</h3>`;
+    data.details.forEach((d, i) => {
+        const icon = d.is_correct ? '✅' : '❌';
+        const ua = Array.isArray(d.user_answer)
+            ? d.user_answer.map(a => String.fromCharCode(65+a)).join(', ') || '未作答'
+            : (d.user_answer !== null ? String.fromCharCode(65+parseInt(d.user_answer)) : '未作答');
+        const ca = Array.isArray(d.correct_answer)
+            ? d.correct_answer.map(a => String.fromCharCode(65+a)).join(', ')
+            : String.fromCharCode(65+d.correct_answer);
+        detailHtml += `<div style="padding:10px;margin-bottom:8px;border-left:4px solid ${d.is_correct?'#16a34a':'#dc2626'};background:${d.is_correct?'#f0fdf4':'#fef2f2'};border-radius:5px;">
+            <div>${icon} ${i+1}. ${d.question}</div>
+            <div style="font-size:0.85em;color:#666;">答案: ${ua} | 正确: ${ca}</div>
+        </div>`;
+    });
+    
+    const w = window.open('', '_blank', 'width=700,height=600');
+    w.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>考试详情</title><style>
+        body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;padding:30px;max-width:800px;margin:0 auto;color:#333;}
+        h3{color:#1e3a5f;margin-bottom:20px;}
+    </style></head><body>${detailHtml}</body></html>`);
+}
+
+function exportCSV() {
+    window.open('/api/admin/export?token=' + token, '_blank');
+}
+
+function logout() {
+    token = null;
+    allRecords = [];
+    document.getElementById('loginPage').style.display = 'block';
+    document.getElementById('adminPage').style.display = 'none';
+}
+</script>
+</body>
+</html>
