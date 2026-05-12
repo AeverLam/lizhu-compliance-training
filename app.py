@@ -490,6 +490,10 @@ def exam_page():
 def admin_page():
     return send_file('admin.html')
 
+@app.route('/preview')
+def preview():
+    return send_file('preview_index.html')
+
 @app.route('/health')
 def health():
     return {'status': 'healthy', 'service': 'compliance-training'}
